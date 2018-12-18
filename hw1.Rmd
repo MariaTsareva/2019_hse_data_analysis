@@ -1,0 +1,13 @@
+# Мария Царева 152
+
+### 1.1
+
+f <- function(x, mu = 3, s = 0.5){dlnorm(x, mu, s)}
+integrate(f, lower=25, upper=50)
+
+### 1.2
+
+f <- function(x, mu = 3, s = 0.5){dlnorm(x, mu, s)}
+lower <- qlnorm(0.1, meanlog = 3, sdlog = 0.5)
+upper <- qlnorm(0.9, meanlog = 3, sdlog = 0.5)
+integrate(f, lower, upper)
