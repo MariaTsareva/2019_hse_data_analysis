@@ -1,0 +1,49 @@
+---
+title: "hw_3"
+author: "Tsareva Maria"
+date: '29. 01. 2019'
+output: html_document
+---
+
+
+### 3.1
+
+```{r}
+df <- read.csv(file="https://github.com/agricolamz/2019_data_analysis_for_linguists/blob/master/data/students/MariaTsareva/hw3_Bayesian_inference/hw3_phoible.csv?raw=true", header=TRUE, sep=",")
+library(tidyverse)
+View(df)
+data_frame(x = df$consonants,
+           PDF = dnorm(x = x, mean = 22, sd = 6)) %>% 
+  ggplot(aes(x, PDF))+
+  geom_line()+
+  labs(title = "PDF нормального распределения (μ = 22, sd = 6)")
+
+prod(dnorm(df$consonants, 22, 6))
+```
+
+### 3.2
+
+```{r}
+df2 <- read.csv("https://raw.githubusercontent.com/agricolamz/2019_data_analysis_for_linguists/master/data/letter_frequency.csv?raw=true", header=TRUE, sep="," )
+View(df2)
+
+
+data_frame(prior = 1/13,
+           likelihood = as.numeric(df2[13,1:13])*as.numeric(df2[15, 1:13])*as.numeric(df2[19, 1:13])*as.numeric(df2[20, 1:13]),
+           product = prior*likelihood,
+           posterior = product/sum(product)) ->
+  results
+results
+
+max(results$posterior)
+```
+
+### 3.3
+
+```{r}
+fd3 <- read.csv('https://github.com/agricolamz/2019_data_analysis_for_linguists/blob/master/data/students/MariaTsareva/hw3_Bayesian_inference/hw3_task_3.csv?raw=true', header=TRUE, sep=",")
+
+sh1 <- as.numeric(fd3$a) + 33
+sh2 <- as.numeric(fd3$b) + 77
+sh1 / (sh1 + sh2)
+```
