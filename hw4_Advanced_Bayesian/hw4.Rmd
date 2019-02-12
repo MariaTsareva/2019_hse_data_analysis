@@ -1,0 +1,44 @@
+---
+title: "hw_4"
+author: "Tsareva Maria"
+date: '12. 02. 2019'
+output: html_document
+---
+
+
+### 4.1
+
+```{r}
+df <- read.csv(file="https://github.com/agricolamz/2019_data_analysis_for_linguists/blob/master/data/students/MariaTsareva/hw4_Advanced_Bayesian/hw4_caretta.csv?raw=true", header=TRUE, sep=",")
+library(tidyverse)
+View(df)
+
+mn <- mean(df$vowel.dur, trim=0.1)
+sd <- sd(df$vowel.dur)
+
+brs02 <- df$vowel.dur[df$speaker == 'brs02']
+mn_brs02 <- mean(brs02)
+sd_brs02 <- sd(brs02)
+sd_post <- (1/sd + 1/sd_brs02)^(-1)
+mean_post <- weighted.mean(c(mn, mn_brs02), c(1/sd, 1/sd_brs02))
+data.frame(
+  speaker = 'brs02',
+  mean = mean_post,
+  sd = sd_post
+)
+```
+
+### 4.2
+
+```{r}
+tt01 <- df$vowel.dur[df$speaker == 'tt01']
+mn_tt01 <- mean(tt01)
+sd_tt01 <- sd(tt01)
+sd_post <- (1/sd + 1/sd_tt01)^(-1)
+mean_post <- weighted.mean(c(mn, mn_tt01), c(1/sd, 1/sd_tt01))
+data.frame(
+  speaker = 'tt01',
+  cred_int_l = qnorm(.025, mean_post, sd_post),
+  cred_int_h = qnorm(.975, mean_post, sd_post)
+)
+```
