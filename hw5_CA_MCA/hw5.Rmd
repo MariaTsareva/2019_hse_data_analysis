@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+output: html_document
+---
+### 5.1
+
+```{r}
+library(tidyverse)
+library(ca)
+
+df <- read.csv(file='https://github.com/agricolamz/2019_data_analysis_for_linguists/blob/master/data/students/MariaTsareva/hw5_CA_MCA/hw5_chairs.csv?raw=true', header=TRUE, sep=",")
+View(df)
+
+df_sec <- df[, 4:19]
+View(df_sec)
+
+MCA <- MASS::mca(df_sec)
+
+dat <- cbind(df_sec, MCA$rs)
+View(dat)
+variables <- as_data_frame(MCA$cs)
+variables$var_names <- rownames(MCA$cs)
+dat %>% 
+  ggplot(aes(`1`, `2`))+
+  geom_point(aes(color = df$Category))+
+  stat_ellipse(aes(color = df$Category))+
+  geom_text(data = variables, aes(`1`, `2`, label = var_names))+
+  theme_bw()+
+  scale_x_continuous(limits = c(-0.009, 0.009))
+```
+### 5.2
+
+У категорий Sessel и Stul есть как общие переменные (пересечения), так и совершенно различные
+Основными различиями можно назвать:
+Sessel -- Stul
+Arms.Yes -- Arms.No
+Recline.Yes -- Recline.No
+ReclineBack.No -- ReclineBack.Yes
+SeatDepth.Norm -- SeatDepth.Deep
+
+
+
+
+
+
+### 5.3
+
+```{r}
+df_1 <- read.csv(file = 'https://github.com/agricolamz/2019_data_analysis_for_linguists/blob/master/data/students/MariaTsareva/hw5_CA_MCA/hw5_colreg.csv?raw=true', header=TRUE, sep=",")
+View(df_1)
+
+rownames(df_1) <- df_1$colors
+ca <- ca(df_1[-5])
+ca
+
+df_col <- data.frame(ca$colcoord)
+df_col$rows <- rownames(ca$colcoord)
+
+df_row <- data.frame(ca$rowcoord)
+df_row$rows <- rownames(ca$rowcoord)
+
+df_col %>% 
+  ggplot(aes(Dim1, Dim2, label = rows))+
+  geom_text(color = "blue")+
+  geom_text(data = df_row, color = "red")+
+  theme_bw()+
+  labs(x = "Dim1 (42.1%)",
+       y = "Dim2 (32.6%)")
+```
+
+### 5.4
+
+В задании 5.3 были использованы данные, содержащие 11 базовых цветов в разных подкорпусах Corpus of Contemporary American English.
+Проанализировав полученный график, можно сказать следущее:
+В подкорпусе FICTION наблюдается наибольшее количество цветов. Это может быть связано с тем, что в художетсвенной литературе присутствует достаточное количество описаний, которые могут включать в себя цветовые обозначения.
+В разговорном корпусе (SPOKEN) выделяется черный цвет, чуть менее заметен белый. Возможно, данное явление можно наблюдать из-за большого количества употреблений "политически корректных" высказываний.
+Ближе всего к корпусу ACADEMIC находится белый цвет, однако можно сказать, что в академических текстах наличие цветов нехарактерно
+PRESS - вторая по количеству цветов. Там расположены красный, зеленый и оранжевый. Наличие первых двух можно объяснить темами про церемонии и экологию.
+Серый цвет "стоит" особняком и не присоединяется к какой-либо группе. Возможно, это связано с тем, что определенных тематических направлений у этого цвета нет.
